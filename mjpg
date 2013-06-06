@@ -1,0 +1,55 @@
+2:6:2013 14:54
+MJPG INSTALLATION GUIDE:
+
+1.First of all make sure, that your webcam is listed correctly by following command.
+
+lsusb
+
+2.To start you’ve got to install the following packages.
+
+apt-get install libv4l-dev
+apt-get install libjpeg8-dev
+apt-get install subversion
+apt-get install imagemagick
+
+ibv4l-dev and libjpeg8-dev are required dependencies. Subversion and ImageMagick will be needed to get and to compile the code.
+
+3.Now you are ready to download and to compile the code you will need for mjpg streaming.
+
+svn co https://mjpg-streamer.svn.sourceforge.net/svnroot/mjpg-streamer mjpg-streamer
+cd mjpg-streamer/mjpg-streamer
+make USE_LIBV4L2=true clean all
+make DESTDIR=/usr install
+
+NOTE: In case you are unable to download from the source, manually download from the given URL and then follow the remaining three steps of STEP2.
+
+4.You are now ready to start the mjpg streamer. Using the following line you start a mjpg stream at port 8090 with a resoultion of 320×240 px and 10 frames per second.
+
+mjpg_streamer -i "/usr/lib/input_uvc.so -d /dev/video0  -r 320x240 -f 10" -o "/usr/lib/output_http.so -p 8090 -w /var/www/mjpg_streamer"
+
+5.Input modifiers of mjpg_streamer are:
+-d: device
+-r: resolution
+-f: frame rate
+-y specifies YUYV format, rather than MJPEG format if MJPEG ist not supported by your webcam.
+
+Output modifiers are:
+-p: port
+-w: web serving directory.
+
+6.To display the image stream just add this line to a html-file. You can replace “raspberrypi” with the ip adress of your Raspberry PI.
+
+img src="http://raspberrypi:8090/?action=stream" width="752"
+
+
+
+
+
+
+
+
+
+
+
+
+
